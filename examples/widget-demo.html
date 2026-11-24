@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Loja Exemplo — widget do assistente</title>
+  <style>
+    body { margin: 0; font-family: system-ui, sans-serif; color: #222; background: #f4f1ea; }
+    header { background: #2f4f3a; color: #fff; padding: 20px 32px; font-size: 1.3rem; font-weight: 600; }
+    main { max-width: 760px; margin: 40px auto; padding: 0 24px; line-height: 1.6; }
+    code { background: #fff; padding: 2px 6px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <header>Loja Exemplo</header>
+  <main>
+    <h1>Um site qualquer, com o assistente embutido</h1>
+    <p>Esta página simula o site de um cliente, em outro endereço. O botão no canto
+      inferior direito vem de uma linha só:</p>
+    <p><code>&lt;script src="http://localhost:3000/widget.js" async&gt;&lt;/script&gt;</code></p>
+    <p>Para testar: <code>npx serve examples -l 5500</code> (ou qualquer servidor estático) e
+      abra <code>http://localhost:5500/widget-demo.html</code> com o app rodando.</p>
+  </main>
+  <script src="http://localhost:3000/widget.js" data-color="#2f4f3a" data-label="Fale com a Loja" async></script>
+</body>
+</html>

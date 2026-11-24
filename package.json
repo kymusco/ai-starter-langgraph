@@ -1,0 +1,23 @@
+{
+  "name": "ai-starter-langgraph",
+  "private": true,
+  "description": "App de IA completo: chat em Next.js, agente em Python com LangGraph, RAG, memória e aprovação humana no PostgreSQL com pgvector.",
+  "engines": { "node": ">=22.13" },
+  "//": "Cada app em apps/ e autossuficiente: o web com o proprio package-lock, o agente com o proprio uv.lock. A raiz so orquestra.",
+  "scripts": {
+    "postinstall": "npm install --prefix apps/web && npm run setup:agent",
+    "setup:agent": "cd apps/agent && uv sync",
+    "dev": "concurrently -k -n agent,web -c magenta,cyan \"npm run dev:agent\" \"npm run dev --prefix apps/web\"",
+    "dev:agent": "cd apps/agent && AGENT_DEV=1 uv run uvicorn agent.main:app --app-dir src --reload --port 8000",
+    "dev:web": "npm run dev --prefix apps/web",
+    "studio": "cd apps/agent && uv run langgraph dev",
+    "test": "cd apps/agent && uv run pytest -q",
+    "typecheck": "npm run typecheck --prefix apps/web",
+    "secrets": "node scripts/secrets.mjs",
+    "db:start": "docker start ai-starter-langgraph-db",
+    "db": "docker run -d --name ai-starter-langgraph-db -p 5432:5432 -e POSTGRES_USER=app -e POSTGRES_PASSWORD=app -e POSTGRES_DB=app pgvector/pgvector:pg18"
+  },
+  "devDependencies": {
+    "concurrently": "10.0.7"
+  }
+}

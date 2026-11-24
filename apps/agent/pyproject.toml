@@ -1,0 +1,23 @@
+[project]
+name = "agent"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.165.0",
+    "langchain>=1.5.2",
+    "langchain-openai>=1.8.5",
+    "langgraph>=1.2.24",
+    "langgraph-checkpoint-postgres>=3.2.1",
+    "psycopg[binary,pool]>=3.3.9",
+    "python-dotenv>=1.2.4",
+    "uvicorn[standard]>=0.54.0",
+]
+
+[dependency-groups]
+dev = [
+    "langgraph-cli[inmem]>=0.4.43",
+    "pytest>=9.2.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]

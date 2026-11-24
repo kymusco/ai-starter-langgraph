@@ -1,0 +1,15 @@
+node_modules/
+.env
+.env.*
+!.env.example
+.next/
+dist/
+*.tsbuildinfo
+.kymus/credentials*
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+# LangGraph Studio local
+.langgraph_api/

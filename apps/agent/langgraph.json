@@ -1,0 +1,8 @@
+{
+  "dependencies": ["."],
+  "graphs": {
+    "assistant": "./src/agent/studio.py:assistant_graph",
+    "open-ticket": "./src/agent/studio.py:tickets_graph"
+  },
+  "env": "../../.env"
+}

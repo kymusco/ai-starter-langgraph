@@ -1,0 +1,102 @@
+:root {
+  color-scheme: light dark;
+  --bg: #fafafa;
+  --fg: #1a1a1a;
+  --muted: #6b6b6b;
+  --line: #e4e4e4;
+  --user: #1a1a1a;
+  --user-fg: #fafafa;
+  --bot: #ffffff;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #111; --fg: #ececec; --muted: #9a9a9a; --line: #2a2a2a; --user: #ececec; --user-fg: #111; --bot: #1a1a1a; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); }
+
+.chat { max-width: 720px; margin: 0 auto; height: 100dvh; display: flex; flex-direction: column; padding: 24px 16px 10px; gap: 12px; }
+header h1 { margin: 0; font-size: 1.25rem; }
+header p { margin: 4px 0 0; color: var(--muted); font-size: 0.9rem; }
+
+/* A conversa rola; cabeçalho e campo ficam parados. */
+.thread { position: relative; flex: 1; min-height: 0; }
+.messages { list-style: none; margin: 0; padding: 0 2px 8px; height: 100%; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: 12px; }
+.messages li { flex-shrink: 0; max-width: 85%; padding: 10px 14px; border-radius: 14px; line-height: 1.5; animation: in 180ms ease-out; }
+.messages li p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.messages li p + p { margin-top: 8px; }
+.messages .user { align-self: flex-end; background: var(--user); color: var(--user-fg); }
+.messages .assistant { align-self: flex-start; background: var(--bot); border: 1px solid var(--line); }
+.messages .empty { align-self: center; color: var(--muted); }
+.messages .tool { color: var(--muted); font-size: 0.85rem; }
+.error { color: #c0392b; margin: 0; font-size: 0.9rem; }
+.error button { padding: 0; border: 0; background: none; color: inherit; font: inherit; text-decoration: underline; cursor: pointer; }
+
+/* Resposta em Markdown. */
+.md { overflow-wrap: anywhere; }
+.md > :first-child { margin-top: 0; }
+.md > :last-child { margin-bottom: 0; }
+.md p, .md ul, .md ol, .md pre, .md blockquote { margin: 0 0 8px; }
+.md ul, .md ol { padding-left: 20px; }
+.md li { max-width: none; padding: 0; animation: none; }
+.md h1, .md h2, .md h3 { margin: 10px 0 6px; font-size: 1rem; }
+.md code { padding: 1px 4px; border-radius: 4px; background: var(--line); font-size: 0.88em; }
+.md pre { padding: 10px; border-radius: 8px; background: var(--line); overflow-x: auto; }
+.md pre code { padding: 0; background: none; }
+.md a { color: inherit; }
+
+/* Enquanto o modelo pensa, antes da primeira palavra. */
+.thinking { display: inline-flex; gap: 4px; padding: 5px 0; vertical-align: middle; }
+.thinking i { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); animation: pulse 1.2s ease-in-out infinite; }
+.thinking i:nth-child(2) { animation-delay: 0.15s; }
+.thinking i:nth-child(3) { animation-delay: 0.3s; }
+@keyframes pulse { 0%, 60%, 100% { opacity: 0.3; transform: none; } 30% { opacity: 1; transform: translateY(-2px); } }
+
+.to-bottom { position: absolute; right: 8px; bottom: 10px; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line); background: var(--bot); color: var(--fg); font: inherit; cursor: pointer; box-shadow: 0 2px 8px rgba(0, 0, 0, .18); }
+
+.composer { display: flex; align-items: flex-end; gap: 8px; }
+.composer textarea { flex: 1; min-width: 0; max-height: 200px; padding: 11px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--bot); color: var(--fg); font: inherit; line-height: 1.45; resize: none; overflow-y: auto; }
+.composer button { flex-shrink: 0; height: 46px; padding: 0 18px; border-radius: 12px; border: 0; background: var(--user); color: var(--user-fg); font: inherit; cursor: pointer; transition: opacity 150ms; }
+.composer button:disabled { opacity: 0.4; cursor: default; }
+.hint { margin: -4px 0 0; color: var(--muted); font-size: 0.72rem; text-align: center; }
+@media (pointer: coarse) { .hint { display: none; } }
+
+@keyframes in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .messages li, .thinking i { animation: none; } }
+
+/* Widget (/embed, dentro do iframe): compacto, ocupa o quadro inteiro. */
+.chat.embed { max-width: none; padding: 14px 12px 8px; gap: 10px; }
+.chat.embed header { padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+.chat.embed header h1 { font-size: 1rem; }
+.chat.embed header p { font-size: 0.8rem; }
+.chat.embed .messages li { max-width: 92%; font-size: 0.95rem; }
+/* No celular o painel ocupa a tela e o botão de fechar (do widget, fora do iframe)
+   fica no canto superior: o cabeçalho reserva o espaço dele. */
+@media (max-width: 480px) { .chat.embed header { padding-right: 64px; } }
+
+/* Tela de aprovação (/admin). */
+.admin { max-width: 820px; margin: 0 auto; padding: 28px 16px 48px; }
+.admin.narrow { max-width: 380px; }
+.admin h1 { margin: 0 0 16px; font-size: 1.3rem; }
+.admin h2 { margin: 28px 0 10px; font-size: 1rem; }
+.admin-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.admin-head h1 { margin: 0; }
+.muted { color: var(--muted); font-size: 0.9rem; }
+.admin button { padding: 9px 16px; border-radius: 10px; border: 0; background: var(--user); color: var(--user-fg); font: inherit; cursor: pointer; transition: opacity 150ms; }
+.admin button:disabled { opacity: 0.45; cursor: default; }
+.admin button.secondary { background: transparent; color: var(--fg); border: 1px solid var(--line); }
+.admin button.link { padding: 0; background: none; color: inherit; text-decoration: underline; }
+.login { position: static; display: flex; flex-direction: column; gap: 12px; }
+.login label { display: flex; flex-direction: column; gap: 5px; font-size: 0.9rem; }
+.login input { padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bot); color: var(--fg); font: inherit; }
+.login button { padding: 11px 16px; }
+.tickets { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.tickets li { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; padding: 14px; background: var(--bot); border: 1px solid var(--line); border-radius: 12px; animation: in 180ms ease-out; }
+.ticket-body { min-width: 0; flex: 1; }
+.ticket-body p { margin: 0; overflow-wrap: anywhere; }
+.ticket-body details { margin-top: 8px; font-size: 0.88rem; color: var(--muted); }
+.ticket-body details p { margin-top: 6px; white-space: pre-wrap; }
+.tags { color: var(--muted); font-size: 0.82rem; margin-bottom: 4px !important; }
+.ticket-actions { display: flex; gap: 8px; flex-shrink: 0; }
+@media (max-width: 560px) { .tickets li { flex-direction: column; } .ticket-actions { width: 100%; } .ticket-actions button { flex: 1; } }
+@media (prefers-reduced-motion: reduce) { .tickets li { animation: none; } }

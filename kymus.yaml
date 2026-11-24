@@ -1,0 +1,50 @@
+# yaml-language-server: $schema=https://kymus.io/schemas/kymus.v1.json
+#
+# A arquitetura do app, como codigo. Tres servicos na mesma rede privada:
+#
+#   navegador -> web (Next.js, publico) -> agent (Python + LangGraph, privado) -> db (PostgreSQL + pgvector)
+#
+# O agente nao tem endereco publico: so o web fala com ele, com um token. A chave do
+# modelo mora so no agente. `npx kymus deploy` cria os tres a partir deste arquivo; a
+# pasta de cada servico de codigo e apps/<servico>.
+version: 1
+environments:
+  production:
+    services:
+      db:
+        type: postgresql
+
+      agent:
+        type: python
+        port: 8000
+        exposed: false
+        # O build instala pelo uv.lock; o inicio aponta o modulo dentro de src/.
+        start: uvicorn agent.main:app --app-dir src --host 0.0.0.0 --port 8000
+        variables:
+          DATABASE_URL: postgresql://${{ db.POSTGRES_USER }}:${{ db.POSTGRES_PASSWORD }}@${{ db.HOST }}:${{ db.PORT }}/${{ db.POSTGRES_DB }}
+          MODEL: openai:gpt-5-mini
+          EMBEDDING_MODEL: openai:text-embedding-3-small
+          OPENAI_API_KEY:
+            secret: true
+          # O token do web. Gere com `npm run secrets`.
+          AGENT_API_TOKEN:
+            secret: true
+          PYTHONUNBUFFERED: "1"
+          # Limite de uso do chat: por visitante e por IP (por hora), e o teto do dia.
+          CHAT_LIMIT_VISITOR_HOUR: "30"
+          CHAT_LIMIT_IP_HOUR: "100"
+          CHAT_LIMIT_TOTAL_DAY: "2000"
+
+      web:
+        type: nodejs
+        port: 3000
+        exposed: true
+        start: npm start
+        variables:
+          AGENT_URL: ${{ agent.URL }}
+          # O mesmo token do agente.
+          AGENT_API_TOKEN:
+            secret: true
+          # Senha da tela /admin, que aprova os chamados urgentes (12 caracteres ou mais).
+          ADMIN_PASSWORD:
+            secret: true
